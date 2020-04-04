@@ -141,20 +141,22 @@ void drawRays3D() {
 				dof+=1;
 			}//next line
 		}
+		if(obj > 0){
+			if(disV<disH)     {rx=vx;ry=vy; disT=disV;}	//vertical ray hit
+			else if(disH<disV){rx=hx;ry=hy; disT=disH;}		//horizontal ray hit
+		}
+		float ca=pa-ra; if(ca<0){ca+=2*PI;} if(ca>2*PI){ca-=2*PI;} disT=disT*cos(ca);	//fix fisheye
+		float lineH=(mapS*320)/disT;
+		if(lineH>320) {lineH=320;}	//line height
+		float lineO=160-lineH/2;	//line offset
 		//Check for kind of object
 		if(obj == W) {
-			if(disV<disH)     {rx=vx;ry=vy; disT=disV;}	//vertical wall hit
-			else if(disH<disV){rx=hx;ry=hy; disT=disH;}		//horizontal wall hit
 			glColor3f(0.8125*(1-(disT/512)),0.8125*(1-(disT/512)),0.6875*(1-(disT/512)));
 		}
 		else if(obj == D) {
-			if(disV<disH)     {rx=vx;ry=vy; disT=disV;}	//vertical door hit
-			else              {rx=hx;ry=hy; disT=disH;}	//horizontal door hit
 			glColor3f(0.51172*(1-(disT/512)),0.50781*(1-(disT/512)),0.39063*(1-(disT/512)));
 		}
 		else if(obj == S) {
-			if(disV<disH)     {rx=vx;ry=vy; disT=disV;}	//vertical staircase hit
-			else              {rx=hx;ry=hy; disT=disH;}	//horizontal staircase hit
 			glColor3f(0*(1-(disT/512)),0*(1-(disT/512)),0*(1-(disT/512)));
 		}
 		else { printf("%d\n",obj);}
@@ -165,10 +167,6 @@ void drawRays3D() {
 		glEnd();
 
 //---Draw 3D---
-		float ca=pa-ra; if(ca<0){ca+=2*PI;} if(ca>2*PI){ca-=2*PI;} disT=disT*cos(ca);	//fix fisheye
-		float lineH=(mapS*320)/disT;
-		if(lineH>320) {lineH=320;}	//line height
-		float lineO=160-lineH/2;	//line offset
 		drawObj3D(r, ra, disT, lineO, lineH);
 		drawFloor3D(r*8+530,320,r*8+530,lineO+lineH, disT);
 		drawRoof3D(r*8+530, 0, r*8+530, lineO, disT);
