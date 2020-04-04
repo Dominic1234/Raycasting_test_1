@@ -196,17 +196,17 @@ void buttons(unsigned char key, int x, int y) {
 		}
 		pdx = cos(pa)*5; pdy = sin(pa)*5;
 	}
-	if(key == 'w' && (px+pdx > 0 && px+pdx < reX/2) && (py+pdy > 0 && py+pdy < reY)) {
-		int pos = map[(int)(((py+pdy-1)/reY*mapY)*mapX+((px+pdx-1)/reX*mapX/2))];
-		printf("%d, %d\n", (int)((px+pdx-1)/(reX/2)*mapX), (int)((py+pdy-1)/reY));
+	if(key == 'w' && (px+pdx >= 0 && px+pdx <= reX/2) && (py+pdy > 0 && py+pdy < reY)) {
+		int pos = map[(int)((((py+pdy)/reY)*mapY)*mapX+(((px+pdx)/reX)*mapX/2))];
+		printf("%d, %d\n", (int)(((px+pdx)/(reX/2))*mapX), (int)((py+pdy)/reY));
 		if(pos == 0 || pos == 2) {
 			px+=pdx; py+=pdy;
 		}
 		if(DEBUG)printf("px=%f, py=%f\n", px, py);
 	}
 	if(key == 's' && (px-pdx > 0 && px-pdx < reX/2) && (py-pdy > 0 && py-pdy < reY)) {
-		int pos = map[(int)(((py-pdy-1)/reY*mapY)*mapX+((px-pdx-1)/reX*mapX/2))];
-		printf("%d, %d\n", (int)((px-pdx)/(reX/2)*mapX), (int)((py-pdy-1)/reY*mapY));
+		int pos = map[(int)(((py-pdy)/reY*mapY)*mapX+((px-pdx)/reX*mapX/2))];
+		printf("%d, %d\n", (int)((px-pdx)/(reX/2)*mapX), (int)((py-pdy)/reY*mapY));
 		if(pos == 0 || pos == 2) {
 			px-=pdx; py-=pdy;
 		}
