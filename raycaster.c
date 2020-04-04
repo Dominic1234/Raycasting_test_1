@@ -75,8 +75,8 @@ float dist(float ax, float ay, float bx, float by, float ang) {
 	return (sqrt((bx-ax)*(bx-ax)+(by-ay)*(by-ay)));
 }
 
-void drawFloor3D(int w, int x, int y, int z) {
-	glColor3f(0.4961,0.42578,0.359375);	//Light Brown floor
+void drawFloor3D(int w, int x, int y, int z, int disT) {
+	glColor3f(0.4961*(1-(disT/512)),0.42578*(1-(disT/512)),0.359375*(1-(disT/512)));	//Light Brown floor
 	glLineWidth(8);
 	glBegin(GL_LINES);
 	glVertex2i(w,x);
@@ -84,8 +84,8 @@ void drawFloor3D(int w, int x, int y, int z) {
 	glEnd();
 }
 
-void drawRoof3D(int w, int x, int y, int z) {
-	glColor3f(0.65, 0.65, 0.55);
+void drawRoof3D(int w, int x, int y, int z, int disT) {
+	glColor3f(0.65*(1-(disT/512)), 0.65*(1-(disT/512)), 0.55*(1-(disT/512)));
 	glLineWidth(8);
 	glBegin(GL_LINES);
 	glVertex2i(w,x);
@@ -170,8 +170,8 @@ void drawRays3D() {
 		if(lineH>320) {lineH=320;}	//line height
 		float lineO=160-lineH/2;	//line offset
 		drawObj3D(r, ra, disT, lineO, lineH);
-		drawFloor3D(r*8+530,320,r*8+530,lineO+lineH);
-		drawRoof3D(r*8+530, 0, r*8+530, lineO);
+		drawFloor3D(r*8+530,320,r*8+530,lineO+lineH, disT);
+		drawRoof3D(r*8+530, 0, r*8+530, lineO, disT);
 		ra+=DR; if(ra<0){ra+=2*PI;} if(ra>2*PI){ra-=2*PI;}
 	}
 }
@@ -200,16 +200,16 @@ void buttons(unsigned char key, int x, int y) {
 		pdx = cos(pa)*5; pdy = sin(pa)*5;
 	}
 	if(key == 'w' && (px+pdx >= 0 && px+pdx <= reX/2) && (py+pdy > 0 && py+pdy < reY)) {
-		int pos = map[(int)((((py+pdy)/reY)*mapY)*mapX+(((px+pdx)/(reX/2))*mapX))];
-		printf("%d*%d+%d=%d\n", (int)(((py+pdy)/reY)*mapY), mapX, (int)(((px+pdx)/(reX/2))*mapX), (int)((((py+pdy)/reY)*mapY)*mapX+(((px+pdx)/(reX/2))*mapX)));
+		int pos = map[((int)(((py+pdy)/reY)*mapY)*mapX+(int)(((px+pdx)/(reX/2))*mapX))];
+		printf("%d*%d+%d=%d\n", (int)(((py+pdy)/reY)*mapY), mapX, (int)(((px+pdx)/(reX/2))*mapX), ((int)(((py+pdy)/reY)*mapY)*mapX+(int)(((px+pdx)/(reX/2))*mapX)));
 		if(pos == E || pos == D) {
 			px+=pdx; py+=pdy;
 		}
 		if(DEBUG)printf("px=%f, py=%f\n", px, py);
 	}
 	if(key == 's' && (px-pdx > 0 && px-pdx < reX/2) && (py-pdy > 0 && py-pdy < reY)) {
-		int pos = map[(int)((((py-pdy)/reY)*mapY)*mapX+(((px-pdx)/(reX/2))*mapX))];
-		printf("%d*%d+%d=%d\n", (int)(((py-pdy)/reY)*mapY), mapX, (int)(((px-pdx)/(reX/2))*mapX), (int)((((py-pdy)/reY)*mapY)*mapX+(((px-pdx)/(reX/2))*mapX)));
+		int pos = map[((int)(((py-pdy)/reY)*mapY)*mapX+(int)(((px-pdx)/(reX/2))*mapX))];
+		printf("%d*%d+%d=%d\n", (int)(((py-pdy)/reY)*mapY), mapX, (int)(((px-pdx)/(reX/2))*mapX), ((int)(((py-pdy)/reY)*mapY)*mapX+(int)(((px-pdx)/(reX/2))*mapX)));
 		if(pos == E || pos == D) {
 			px-=pdx; py-=pdy;
 		}
