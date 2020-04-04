@@ -201,7 +201,7 @@ void buttons(unsigned char key, int x, int y) {
 	}
 	if(key == 'w' && (px+pdx >= 0 && px+pdx <= reX/2) && (py+pdy > 0 && py+pdy < reY)) {
 		int pos = map[((int)(((py+pdy)/reY)*mapY)*mapX+(int)(((px+pdx)/(reX/2))*mapX))];
-		printf("%d*%d+%d=%d\n", (int)(((py+pdy)/reY)*mapY), mapX, (int)(((px+pdx)/(reX/2))*mapX), ((int)(((py+pdy)/reY)*mapY)*mapX+(int)(((px+pdx)/(reX/2))*mapX)));
+		if(DEBUG)printf("%d*%d+%d=%d\n", (int)(((py+pdy)/reY)*mapY), mapX, (int)(((px+pdx)/(reX/2))*mapX), ((int)(((py+pdy)/reY)*mapY)*mapX+(int)(((px+pdx)/(reX/2))*mapX)));
 		if(pos == E || pos == D) {
 			px+=pdx; py+=pdy;
 		}
@@ -209,7 +209,7 @@ void buttons(unsigned char key, int x, int y) {
 	}
 	if(key == 's' && (px-pdx > 0 && px-pdx < reX/2) && (py-pdy > 0 && py-pdy < reY)) {
 		int pos = map[((int)(((py-pdy)/reY)*mapY)*mapX+(int)(((px-pdx)/(reX/2))*mapX))];
-		printf("%d*%d+%d=%d\n", (int)(((py-pdy)/reY)*mapY), mapX, (int)(((px-pdx)/(reX/2))*mapX), ((int)(((py-pdy)/reY)*mapY)*mapX+(int)(((px-pdx)/(reX/2))*mapX)));
+		if(DEBUG)printf("%d*%d+%d=%d\n", (int)(((py-pdy)/reY)*mapY), mapX, (int)(((px-pdx)/(reX/2))*mapX), ((int)(((py-pdy)/reY)*mapY)*mapX+(int)(((px-pdx)/(reX/2))*mapX)));
 		if(pos == E || pos == D) {
 			px-=pdx; py-=pdy;
 		}
@@ -228,7 +228,7 @@ void init() {
 
 int main(int argc, char* argv[]) {
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
 	glutInitWindowSize(reX, reY);
 	glutCreateWindow("3D-Test-1");
 	init();
