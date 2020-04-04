@@ -143,16 +143,19 @@ void drawRays3D() {
 		}
 		//Check for kind of object
 		if(obj == W) {
-			if(disV<disH)     {rx=vx;ry=vy; disT=disV; glColor3f(0.8125*(1-(disT/512)),0.8125*(1-(disT/512)),0.6875*(1-(disT/512)));}	//vertical wall hit
-			else if(disH<disV){rx=hx;ry=hy; disT=disH; glColor3f(0.73125*(1-(disT/512)),  0.73125*(1-(disT/512)),  0.61875*(1-(disT/512)));}		//horizontal wall hit
+			if(disV<disH)     {rx=vx;ry=vy; disT=disV;}	//vertical wall hit
+			else if(disH<disV){rx=hx;ry=hy; disT=disH;}		//horizontal wall hit
+			glColor3f(0.8125*(1-(disT/512)),0.8125*(1-(disT/512)),0.6875*(1-(disT/512)));
 		}
 		else if(obj == D) {
-			if(disV<disH)     {rx=vx;ry=vy; disT=disV; glColor3f(0.51172,0.50781,0.39063);/* glGenerateMipmap(GL_TEXTURE_2D);*/}	//vertical door hit
-			else              {rx=hx;ry=hy; disT=disH; glColor3f(0.51172,0.50781,0.39063);/* glGenerateMipmap(GL_TEXTURE_2D);*/}	//horizontal door hit
+			if(disV<disH)     {rx=vx;ry=vy; disT=disV;}	//vertical door hit
+			else              {rx=hx;ry=hy; disT=disH;}	//horizontal door hit
+			glColor3f(0.51172*(1-(disT/512)),0.50781*(1-(disT/512)),0.39063*(1-(disT/512)));
 		}
 		else if(obj == S) {
-			if(disV<disH)     {rx=vx;ry=vy; disT=disV; glColor3f(0,0,0);}	//vertical staircase hit
-			else              {rx=hx;ry=hy; disT=disH; glColor3f(0,0,0);}	//horizontal staircase hit
+			if(disV<disH)     {rx=vx;ry=vy; disT=disV;}	//vertical staircase hit
+			else              {rx=hx;ry=hy; disT=disH;}	//horizontal staircase hit
+			glColor3f(0*(1-(disT/512)),0*(1-(disT/512)),0*(1-(disT/512)));
 		}
 		else { printf("%d\n",obj);}
 		glLineWidth(1);
@@ -198,7 +201,7 @@ void buttons(unsigned char key, int x, int y) {
 	}
 	if(key == 'w' && (px+pdx >= 0 && px+pdx <= reX/2) && (py+pdy > 0 && py+pdy < reY)) {
 		int pos = map[(int)((((py+pdy)/reY)*mapY)*mapX+(((px+pdx)/reX)*mapX/2))];
-		printf("%d\n", (int)((((py+pdy)/reY)*mapY)*mapX+(((px+pdx)/reX)*mapX/2)));
+		printf("%d*%d+%d=%d\n", (int)(((py+pdy)/reY)*mapY), mapX, (int)(((px+pdx)/reX)*mapX/2), (int)((((py+pdy)/reY)*mapY)*mapX+(((px+pdx)/reX)*mapX/2)));
 		if(pos == E || pos == D) {
 			px+=pdx; py+=pdy;
 		}
@@ -206,7 +209,7 @@ void buttons(unsigned char key, int x, int y) {
 	}
 	if(key == 's' && (px-pdx > 0 && px-pdx < reX/2) && (py-pdy > 0 && py-pdy < reY)) {
 		int pos = map[(int)((((py-pdy)/reY)*mapY)*mapX+(((px-pdx)/reX)*mapX/2))];
-		printf("%d\n", (int)((((py-pdy)/reY)*mapY)*mapX+(((px-pdx)/reX)*mapX/2)));
+		printf("%d*%d+%d=%d\n", (int)(((py-pdy)/reY)*mapY), mapX, (int)(((px-pdx)/reX)*mapX/2), (int)((((py-pdy)/reY)*mapY)*mapX+(((px-pdx)/reX)*mapX/2)));
 		if(pos == E || pos == D) {
 			px-=pdx; py-=pdy;
 		}
