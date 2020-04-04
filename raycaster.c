@@ -198,7 +198,7 @@ void buttons(unsigned char key, int x, int y) {
 	}
 	if(key == 'w' && (px+pdx >= 0 && px+pdx <= reX/2) && (py+pdy > 0 && py+pdy < reY)) {
 		int pos = map[(int)((((py+pdy)/reY)*mapY)*mapX+(((px+pdx)/reX)*mapX/2))];
-		printf("%d, %d\n", (int)(((px+pdx)/(reX/2))*mapX), (int)((py+pdy)/reY));
+		printf("%d, %d\n", (int)(((px+pdx)/(reX/2))*mapX), (int)(((py+pdy)/reY)*mapY));
 		if(pos == 0 || pos == 2) {
 			px+=pdx; py+=pdy;
 		}
@@ -206,7 +206,7 @@ void buttons(unsigned char key, int x, int y) {
 	}
 	if(key == 's' && (px-pdx > 0 && px-pdx < reX/2) && (py-pdy > 0 && py-pdy < reY)) {
 		int pos = map[(int)((((py-pdy)/reY)*mapY)*mapX+(((px-pdx)/reX)*mapX/2))];
-		printf("%d, %d\n", (int)(((px-pdx)/(reX/2))*mapX), (int)(((py-pdy)/reY)));
+		printf("%d, %d\n", (int)(((px-pdx)/(reX/2))*mapX), (int)((((py-pdy)/reY)*mapY)));
 		if(pos == 0 || pos == 2) {
 			px-=pdx; py-=pdy;
 		}
