@@ -9,7 +9,7 @@
 #define PI  3.141592653589793238
 #define P2  PI/2
 #define P3  3*PI/2
-#define DR  0.0174533  	//one degree in radians
+#define DR  0.00872665  	//half a degree in radians
 #define SP  32
 #define esc 27
 #define E   0		//Empty
@@ -75,18 +75,18 @@ float dist(float ax, float ay, float bx, float by, float ang) {
 	return (sqrt((bx-ax)*(bx-ax)+(by-ay)*(by-ay)));
 }
 
-void drawFloor3D(int w, int x, int y, int z, int disT) {
-	glColor3f(0.4961*(1-(disT/512)),0.42578*(1-(disT/512)),0.359375*(1-(disT/512)));	//Light Brown floor
-	glLineWidth(8);
+void drawFloor3D(int w, int x, int y, int z) {
+	glColor3f(0.4961,0.42578,0.359375);
+	glLineWidth(4);
 	glBegin(GL_LINES);
 	glVertex2i(w,x);
 	glVertex2i(y,z);
 	glEnd();
 }
 
-void drawRoof3D(int w, int x, int y, int z, int disT) {
-	glColor3f(0.65*(1-(disT/512)), 0.65*(1-(disT/512)), 0.55*(1-(disT/512)));
-	glLineWidth(8);
+void drawRoof3D(int w, int x, int y, int z) {
+	glColor3f(0.65, 0.65, 0.55);
+	glLineWidth(4);
 	glBegin(GL_LINES);
 	glVertex2i(w,x);
 	glVertex2i(y,z);
@@ -95,10 +95,10 @@ void drawRoof3D(int w, int x, int y, int z, int disT) {
 
 void drawObj3D(int r, float ra, float disT, float lineO, float lineH) {
 
-	glLineWidth(8);
+	glLineWidth(4);
 	glBegin(GL_LINES);
-	glVertex2i(r*8+530,lineO);
-	glVertex2i(r*8+530,lineH+lineO);
+	glVertex2i(r*4+530,lineO);
+	glVertex2i(r*4+530,lineH+lineO);
 	glEnd();
 }
 
@@ -106,7 +106,7 @@ void drawRays3D() {
 	int r, mx, my, mp, dof, obj;
 	float rx, ry, ra, xo, yo, disT;
 	ra = pa-(DR*30); if(ra<0){ra+=2*PI;} if(ra>2*PI){ra-=2*PI;}
-	for(r = 0; r < 60; r++) {
+	for(r = 0; r < 120; r++) {
 
 //---Check Horizontal Lines---
 		dof = 0;
@@ -151,13 +151,13 @@ void drawRays3D() {
 		float lineO=160-lineH/2;	//line offset
 		//Check for kind of object
 		if(obj == W) {
-			glColor3f(0.8125*(1-(disT/512)),0.8125*(1-(disT/512)),0.6875*(1-(disT/512)));
+			glColor3f(0.81250*(1-(disT/reY)),0.81250*(1-(disT/reY)),0.68750*(1-(disT/reY)));
 		}
 		else if(obj == D) {
-			glColor3f(0.51172*(1-(disT/512)),0.50781*(1-(disT/512)),0.39063*(1-(disT/512)));
+			glColor3f(0.51172*(1-(disT/reY)),0.50781*(1-(disT/reY)),0.39063*(1-(disT/reY)));
 		}
 		else if(obj == S) {
-			glColor3f(0*(1-(disT/512)),0*(1-(disT/512)),0*(1-(disT/512)));
+			glColor3f(0      *(1-(disT/reY)),0      *(1-(disT/reY)),0      *(1-(disT/reY)));
 		}
 		else { printf("%d\n",obj);}
 		glLineWidth(1);
@@ -168,8 +168,8 @@ void drawRays3D() {
 
 //---Draw 3D---
 		drawObj3D(r, ra, disT, lineO, lineH);
-		drawFloor3D(r*8+530,320,r*8+530,lineO+lineH, disT);
-		drawRoof3D(r*8+530, 0, r*8+530, lineO, disT);
+		drawFloor3D(r*4+530,320,r*4+530,lineO+lineH);
+		drawRoof3D(r*4+530, 0, r*4+530, lineO);
 		ra+=DR; if(ra<0){ra+=2*PI;} if(ra>2*PI){ra-=2*PI;}
 	}
 }
