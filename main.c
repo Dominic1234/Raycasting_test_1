@@ -18,9 +18,8 @@
 #define S   3		//Stairs
 
 unsigned char* door_tex;	//Door texture
-float px, py, pdx, pdy, pa, ph; //player positions
+float px, py, pz, pdx, pdy, pdz, pa; //player positions
 
-//To implement player jump ph
 
 //importing textures
 //GLuint tex;
@@ -112,12 +111,24 @@ void drawRays3D() {
 		dof = 0;
 		float disH=100000000, hx=px, hy=py;
 		float aTan=-1/tan(ra);
-		if(ra > PI){ry=(((int)py>>6)<<6)-0.0001; rx=(py-ry)*aTan+px; yo=-64; xo=-yo*aTan;}//looking up
-		if(ra < PI){ry=(((int)py>>6)<<6)+64;     rx=(py-ry)*aTan+px; yo= 64; xo=-yo*aTan;}//looking down
-		if(ra==0 || ra == PI){rx=px; ry=py; dof=8;}//looking straight left or right
+		if(ra > PI){		//looking up
+			ry=(((int)py>>6)<<6)-0.0001;
+			rx=(py-ry)*aTan+px;
+			yo=-64; xo=-yo*aTan;
+		}
+		if(ra < PI){		//looking down
+			ry=(((int)py>>6)<<6)+64;
+			rx=(py-ry)*aTan+px;
+			yo= 64; xo=-yo*aTan;
+		}
+		if(ra==0 || ra == PI){rx=px; ry=py; dof=8;}	//looking straight left or right
 		while(dof<8) {
 			mx = (int)(rx)>>6; my = (int)(ry)>>6; mp=my*mapX+mx;
-			if(mp > 0 && mp<mapX*mapY && map[mp]>E){ hx = rx; hy = ry; disH = dist(px,py,hx,hy,ra); dof=8; obj = map[mp];}//hit object
+			if(mp > 0 && mp<mapX*mapY && map[mp]>E){	//hit object
+				hx = rx; hy = ry;
+				disH = dist(px,py,hx,hy,ra);
+				dof=8; obj = map[mp];
+			}
 			else {
 				rx+=xo;
 				ry+=yo;
@@ -129,12 +140,26 @@ void drawRays3D() {
 		dof = 0;
 		float disV=100000000, vx=px, vy=py;
 		float nTan=-tan(ra);
-		if(ra > P2 && ra < P3){rx=(((int)px>>6)<<6)-0.0001; ry=(px-rx)*nTan+py; xo=-64; yo=-xo*nTan;}//looking left
-		if(ra < P2 || ra > P3){rx=(((int)px>>6)<<6)+64;     ry=(px-rx)*nTan+py; xo= 64; yo=-xo*nTan;}//looking right
-		if(ra==0 || ra == PI){rx=px; ry=py; dof=8;}//looking straight up or down
+		if(ra > P2 && ra < P3) {		//looking left
+			rx=(((int)px>>6)<<6)-0.0001;
+			ry=(px-rx)*nTan+py;
+			xo=-64;
+			yo=-xo*nTan;
+		}
+		if(ra < P2 || ra > P3){		//looking right
+			rx=(((int)px>>6)<<6)+64;
+			ry=(px-rx)*nTan+py;
+			xo= 64;
+			yo=-xo*nTan;
+		}
+		if(ra==0 || ra == PI){rx=px; ry=py; dof=8;}	//looking straight up or down
 		while(dof<8) {
 			mx = (int)(rx)>>6; my = (int)(ry)>>6; mp=my*mapX+mx;
-			if(mp > 0 && mp<mapX*mapY && map[mp]>E){ vx = rx; vy = ry; disV = dist(px,py,vx,vy,ra); dof=8; obj = map[mp];}//hit object
+			if(mp > 0 && mp<mapX*mapY && map[mp]>E){	//hit object
+				vx = rx; vy = ry;
+				disV = dist(px,py,vx,vy,ra);
+				dof=8; obj = map[mp];
+			}
 			else {
 				rx+=xo;
 				ry+=yo;
@@ -145,7 +170,8 @@ void drawRays3D() {
 			if(disV<disH)     {rx=vx;ry=vy; disT=disV;}	//vertical ray hit
 			else if(disH<disV){rx=hx;ry=hy; disT=disH;}		//horizontal ray hit
 		}
-		float ca=pa-ra; if(ca<0){ca+=2*PI;} if(ca>2*PI){ca-=2*PI;} disT=disT*cos(ca);	//fix fisheye
+		float ca=pa-ra;
+		if(ca<0){ca+=2*PI;} if(ca>2*PI){ca-=2*PI;} disT=disT*cos(ca);	//fix fisheye
 		float lineH=(mapS*320)/disT;
 		if(lineH>320) {lineH=320;}	//line height
 		float lineO=160-lineH/2;	//line offset
@@ -183,19 +209,19 @@ void display() {
 }
 
 void buttons(unsigned char key, int x, int y) {
-	if(key == 'a') {
-		pa-=0.1;
-		if(pa < 0)    {
-			pa+=2*PI;
+	if(key == 'a') {	//Strafe Left
+		int pos = map[((int)(((py+pdy)/reY)*mapY)*mapX+(int)(((px-pdx)/(reX/2))*mapX))];
+		if(DEBUG)printf("%d*%d+%d=%d\n", (int)(((py+pdy)/reY)*mapY), mapX, (int)(((px-pdx)/(reX/2))*mapX), ((int)(((py+pdy)/reY)*mapY)*mapX+(int)(((px-pdx)/(reX/2))*mapX)));
+		if(pos == E || pos == D) {
+			px-=pdx; py+=pdy;
 		}
-		pdx = cos(pa)*5; pdy = sin(pa)*5;
 	}
-	if(key == 'd') {
-		pa+=0.1;
-		if(pa > 2*PI) {
-			pa-=2*PI;
+	if(key == 'd') {	//Strafe Right
+		int pos = map[((int)(((py-pdy)/reY)*mapY)*mapX+(int)(((px+pdx)/(reX/2))*mapX))];
+		if(DEBUG)printf("%d*%d+%d=%d\n", (int)(((py-pdy)/reY)*mapY), mapX, (int)(((px+pdx)/(reX/2))*mapX), ((int)(((py-pdy)/reY)*mapY)*mapX+(int)(((px+pdx)/(reX/2))*mapX)));
+		if(pos == E || pos == D) {
+			px+=pdx; py-=pdy;
 		}
-		pdx = cos(pa)*5; pdy = sin(pa)*5;
 	}
 	if(key == 'w' && (px+pdx >= 0 && px+pdx <= reX/2) && (py+pdy > 0 && py+pdy < reY)) {
 		int pos = map[((int)(((py+pdy)/reY)*mapY)*mapX+(int)(((px+pdx)/(reX/2))*mapX))];
@@ -217,6 +243,24 @@ void buttons(unsigned char key, int x, int y) {
 	glutPostRedisplay();
 }
 
+void sp_buttons(unsigned char key, int x, int y) {
+	if(key == GLUT_KEY_LEFT) {		//Left turn
+		pa-=0.1;
+		if(pa < 0)    {
+			pa+=2*PI;
+		}
+		pdx = cos(pa)*5; pdy = sin(pa)*5;
+	}
+	if(key == GLUT_KEY_RIGHT) {	//Right turn
+		pa+=0.1;
+		if(pa > 2*PI) {
+			pa-=2*PI;
+		}
+		pdx = cos(pa)*5; pdy = sin(pa)*5;
+	}
+	glutPostRedisplay();
+}
+
 void init() {
 	glClearColor(0.3,0.3,0.3,0);
 	gluOrtho2D(0,1024,512,0);
@@ -232,6 +276,7 @@ int main(int argc, char* argv[]) {
 	init();
 	glutDisplayFunc(display);
 	glutKeyboardFunc(buttons);
+	glutSpecialFunc(sp_buttons);
 	glutMainLoop();
 	return 0;
 }
