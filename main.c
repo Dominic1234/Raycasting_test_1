@@ -20,10 +20,11 @@
 unsigned char* door_tex;	//Door texture
 float px, py, pz, pdx, pdy, pdz, pa; //player positions
 
+typedef struct {
+	int w,a,s,d;	//button states
+}ButtonKeys;
+ButtonKeys keys;
 
-//importing textures
-//GLuint tex;
-//glGenTextures(1, &tex);
 
 void drawPlayer() {
 	glColor3f(1,0,0);
@@ -201,29 +202,22 @@ void drawRays3D() {
 }
 
 void display() {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	drawMap2D();
-	drawPlayer();
-	drawRays3D();
-	glutSwapBuffers();
-}
-
-void buttons(unsigned char key, int x, int y) {
-	if(key == 'a') {	//Strafe Left
+	//buttons
+	if(keys.a == 1) {	//Strafe Left
 		int pos = map[((int)(((py+pdy)/reY)*mapY)*mapX+(int)(((px-pdx)/(reX/2))*mapX))];
 		if(DEBUG)printf("%d*%d+%d=%d\n", (int)(((py+pdy)/reY)*mapY), mapX, (int)(((px-pdx)/(reX/2))*mapX), ((int)(((py+pdy)/reY)*mapY)*mapX+(int)(((px-pdx)/(reX/2))*mapX)));
 		if(pos == E || pos == D) {
 			px-=pdx; py+=pdy;
 		}
 	}
-	if(key == 'd') {	//Strafe Right
+	if(keys.d == 1) {	//Strafe Right
 		int pos = map[((int)(((py-pdy)/reY)*mapY)*mapX+(int)(((px+pdx)/(reX/2))*mapX))];
 		if(DEBUG)printf("%d*%d+%d=%d\n", (int)(((py-pdy)/reY)*mapY), mapX, (int)(((px+pdx)/(reX/2))*mapX), ((int)(((py-pdy)/reY)*mapY)*mapX+(int)(((px+pdx)/(reX/2))*mapX)));
 		if(pos == E || pos == D) {
 			px+=pdx; py-=pdy;
 		}
 	}
-	if(key == 'w' && (px+pdx >= 0 && px+pdx <= reX/2) && (py+pdy > 0 && py+pdy < reY)) {
+	if(keys.w == 1 && (px+pdx >= 0 && px+pdx <= reX/2) && (py+pdy > 0 && py+pdy < reY)) {
 		int pos = map[((int)(((py+pdy)/reY)*mapY)*mapX+(int)(((px+pdx)/(reX/2))*mapX))];
 		if(DEBUG)printf("%d*%d+%d=%d\n", (int)(((py+pdy)/reY)*mapY), mapX, (int)(((px+pdx)/(reX/2))*mapX), ((int)(((py+pdy)/reY)*mapY)*mapX+(int)(((px+pdx)/(reX/2))*mapX)));
 		if(pos == E || pos == D) {
@@ -231,7 +225,7 @@ void buttons(unsigned char key, int x, int y) {
 		}
 		if(DEBUG)printf("px=%f, py=%f\n", px, py);
 	}
-	if(key == 's' && (px-pdx > 0 && px-pdx < reX/2) && (py-pdy > 0 && py-pdy < reY)) {
+	if(keys.s == 1 && (px-pdx > 0 && px-pdx < reX/2) && (py-pdy > 0 && py-pdy < reY)) {
 		int pos = map[((int)(((py-pdy)/reY)*mapY)*mapX+(int)(((px-pdx)/(reX/2))*mapX))];
 		if(DEBUG)printf("%d*%d+%d=%d\n", (int)(((py-pdy)/reY)*mapY), mapX, (int)(((px-pdx)/(reX/2))*mapX), ((int)(((py-pdy)/reY)*mapY)*mapX+(int)(((px-pdx)/(reX/2))*mapX)));
 		if(pos == E || pos == D) {
@@ -239,8 +233,13 @@ void buttons(unsigned char key, int x, int y) {
 		}
 		if(DEBUG)printf("px=%f, py=%f\n", px, py);
 	}
-	if(key == SP){if(DEBUG)printf("Jump\n");}
 	glutPostRedisplay();
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	drawMap2D();
+	drawPlayer();
+	drawRays3D();
+	glutSwapBuffers();
 }
 
 void sp_buttons(unsigned char key, int x, int y) {
@@ -265,17 +264,39 @@ void init() {
 	glClearColor(0.3,0.3,0.3,0);
 	gluOrtho2D(0,1024,512,0);
 	pa = 0; px = 300; py = 300; pdx = cos(pa)*5; pdy = sin(pa)*5;
+}
 
+void ButtonDown(unsigned char key, int x, int y) {
+	if(key=='a') {keys.a = 1;}
+	if(key=='d') {keys.d = 1;}
+	if(key=='w') {keys.w = 1;}
+	if(key=='s') {keys.s = 1;}
+	glutPostRedisplay();
+}
+
+void ButtonUp(unsigned char key, int x, int y) {
+	if(key=='a') {keys.a = 0;}
+	if(key=='d') {keys.d = 0;}
+	if(key=='w') {keys.w = 0;}
+	if(key=='s') {keys.s = 0;}
+	glutPostRedisplay();
+}
+
+void resize(int w, int h) {
+	glutReshapeWindow(reX, reY);
 }
 
 int main(int argc, char* argv[]) {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
 	glutInitWindowSize(reX, reY);
+	glutInitWindowPosition(200, 200);
 	glutCreateWindow("3D-Test-1");
 	init();
 	glutDisplayFunc(display);
-	glutKeyboardFunc(buttons);
+	glutReshapeFunc(resize);
+	glutKeyboardFunc(ButtonUp);
+	glutKeyboardFunc(ButtonDown);
 	glutSpecialFunc(sp_buttons);
 	glutMainLoop();
 	return 0;
