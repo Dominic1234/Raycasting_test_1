@@ -5,4 +5,4 @@ main.o: main.c
 	gcc -c main.c -lGL -lGLU -lglut -lm
 
 clean:
-	rm -f main.o
+	rm -f main.o raycaster

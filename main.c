@@ -242,7 +242,7 @@ void display() {
 	glutSwapBuffers();
 }
 
-void sp_buttons(unsigned char key, int x, int y) {
+void sp_buttons(int key, int x, int y) {
 	if(key == GLUT_KEY_LEFT) {		//Left turn
 		pa-=0.1;
 		if(pa < 0)    {
